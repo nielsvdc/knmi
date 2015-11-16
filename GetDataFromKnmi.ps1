@@ -27,7 +27,7 @@ $startYear = 2005;
 ###################################################################################
 
 # Get the KNMI data using a webrequest post
-function DoWebRequest($url, $params, $outputFile)
+function Get-WebRequestData($url, $params, $outputFile)
 {
     [System.Net.HttpWebRequest] $request = [System.Net.WebRequest]::Create($url);
     $request.ContentType = "application/x-www-form-urlencoded";
@@ -75,21 +75,19 @@ for ($year=$startYear;$year -le $curYear;$year++)
     # If files do not exist for the year, create the files
     if (-not (Test-Path $fileDay))
     {
-        DoWebRequest $urlDay $paramsDay $fileDay;
+        Get-WebRequestData $urlDay $paramsDay $fileDay;
         $gotDay = $true;
     }
     if (-not (Test-Path $fileHour))
     {
-        DoWebRequest $urlHour $paramsHour $fileHour;
+        Get-WebRequestData $urlHour $paramsHour $fileHour;
         $gotHour = $true;
     }
     
     # Always refresh the current year file and optionaly the file from last year
     if ($year -eq $curYear -or $year -eq $prevYear)
     {
-        if (-not ($gotDay)) { DoWebRequest $urlDay $paramsDay $fileDay; }
-        if (-not ($gotHour)) { DoWebRequest $urlHour $paramsHour $fileHour; }
+        if (-not ($gotDay)) { Get-WebRequestData $urlDay $paramsDay $fileDay; }
+        if (-not ($gotHour)) { Get-WebRequestData $urlHour $paramsHour $fileHour; }
     }
 }
-
-
